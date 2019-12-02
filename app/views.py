@@ -7,7 +7,7 @@ import os
 from pprint import pprint
 import base64
 
-import requests
+# import requests
 import cv2
 import numpy as np
 from keras.models import load_model
