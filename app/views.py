@@ -81,28 +81,28 @@ def jinja():
         my_remote=my_remote, repeat=repeat
     )
 
-@app.route("/sign-up", methods=["GET", "POST"])
-def sign_up():
+# @app.route("/sign-up", methods=["GET", "POST"])
+# def sign_up():
 
-    if request.method == "POST":
-        # print(request.url)
-        username = request.form.get("username")
-        email = request.form.get("email")
-        password = request.form.get("password")
+#     if request.method == "POST":
+#         # print(request.url)
+#         username = request.form.get("username")
+#         email = request.form.get("email")
+#         password = request.form.get("password")
 
-        # Alternatively
+#         # Alternatively
 
-        # username = request.form["username"]
-        # email = request.form["email"]
-        # password = request.form["password"]
+#         # username = request.form["username"]
+#         # email = request.form["email"]
+#         # password = request.form["password"]
 
-        # return redirect(request.url)
-        return jsonify({'name': username,
-                        'email': email,
-                        'password': password
-                        })
-    else:
-        return render_template("public/sign_up.html")
+#         # return redirect(request.url)
+#         return jsonify({'name': username,
+#                         'email': email,
+#                         'password': password
+#                         })
+#     else:
+#         return render_template("public/sign_up.html")
 
 def allowed_image(filename):
     
