@@ -6,9 +6,12 @@ import sys
 import os
 from pprint import pprint
 import base64
+import urllib.request
+import json
+# import cv2
 
-# import requests
-import cv2
+import http.client
+from cv2 import cv2
 import numpy as np
 from keras.models import load_model
 
@@ -50,8 +53,7 @@ def allowed_image_filesize(filesize):
         return False
 
 
-# @app.route("/upload-image", methods=["GET", "POST"])
-@app.route("/upload-image", methods=["POST"])
+@app.route("/upload-image", methods=["GET", "POST"])
 def upload_image():
     
     if request.method == "POST":
@@ -95,15 +97,30 @@ def upload_image():
                     res_read = res_read + prediction
                     # cv2.imshow('charachter'+str(i), roi)
                     # cv2.waitKey(0)
-            
-            query = {'q': res_read}
-            req = requests.get('https://nhqt-dict.herokuapp.com/api/e_search', params=query)
-        
+
+            params = "/api/e_search?q=" + res_read
+
+            connection = http.client.HTTPSConnection("nhqt-dict.herokuapp.com")
+            connection.request("GET", params)
+
+            req = connection.getresponse()
+            # connection.close()
+
+            # return("Status: {} and reason: {}".format(req.status, req.reason))
+            # return json.loads(req.read())
+
+            # query = {'q': res_read}
+            # req = requests.get('https://nhqt-dict.herokuapp.com/api/check')
+            # return req.text
+
             return jsonify({
-                'result': req.text,
+                'result': req.read(),
                 'read_text': res_read
                 }), 201
+        return jsonify({
+            'result': 'error',
+            'read_text': ''}), 201   
 
-    return jsonify({
-        'result': 'error',
-        'read_text': ''}), 201   
+    return render_template("public/upload_image.html")
+
+   
