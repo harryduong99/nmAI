@@ -98,6 +98,7 @@ def upload_image():
                     # cv2.imshow('charachter'+str(i), roi)
                     # cv2.waitKey(0)
 
+
             params = "/api/e_search?q=" + res_read
 
             connection = http.client.HTTPSConnection("nhqt-dict.herokuapp.com")
@@ -112,12 +113,13 @@ def upload_image():
             # query = {'q': res_read}
             # req = requests.get('https://nhqt-dict.herokuapp.com/api/check')
             # return req.text
-            # rs = []
-            # rs.append(req.read())
-            # rs.append(res_read)
-            # return req.read()
-            data = {'result': req.read(),'read_text': res_read}
-            return json.dumps(data)
+            rs = {}
+            rs['read_text'] = res_read
+            rs['result'] = req.read()
+        
+            return rs
+            # data = {'result': req.read(),'read_text': res_read}
+            # return json.dumps(data)
         # return jsonify({
         #     'result': 'error',
         #     'read_text': ''}), 201   
