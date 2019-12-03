@@ -113,15 +113,17 @@ def upload_image():
             # query = {'q': res_read}
             # req = requests.get('https://nhqt-dict.herokuapp.com/api/check')
             # return req.text
-            rs = {}
-            rs['read_text'] = res_read
+            # rs = {}
+            # rs['read_text'] = res_read
         
-            return rs
-            # data = {'result': req.read(),'read_text': res_read}
-            # return json.dumps(data)
-        # return jsonify({
-        #     'result': 'error',
-        #     'read_text': ''}), 201   
+            # return rs
+            
+            return jsonify({
+                'result': res_read,
+                'read_text': ''}), 201
+        return jsonify({
+            'result': 'error',
+            'read_text': ''}), 201   
 
     return render_template("public/upload_image.html")
 
