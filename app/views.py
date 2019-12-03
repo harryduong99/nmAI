@@ -116,13 +116,11 @@ def upload_image():
             # rs.append(req.read())
             # rs.append(res_read)
             # return req.read()
-            return jsonify({
-                'result': req.read(),
-                'read_text': res_read
-                }), 201
-        return jsonify({
-            'result': 'error',
-            'read_text': ''}), 201   
+            data = {'result': req.read(),'read_text': res_read}
+            return json.dumps(data)
+        # return jsonify({
+        #     'result': 'error',
+        #     'read_text': ''}), 201   
 
     return render_template("public/upload_image.html")
 
