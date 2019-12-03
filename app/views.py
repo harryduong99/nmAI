@@ -106,21 +106,22 @@ def upload_image():
 
             req = connection.getresponse()
             # connection.close()
-
+            # return json.loads(req.read())
             # return("Status: {} and reason: {}".format(req.status, req.reason))
             # return json.loads(req.read())
 
             # query = {'q': res_read}
             # req = requests.get('https://nhqt-dict.herokuapp.com/api/check')
             # return req.text
-            # rs = {}
-            # rs['read_text'] = res_read
+            rs = {}
+            rs['read_text'] = res_read
         
             # return rs
-            
             return jsonify({
-                'result': res_read,
-                'read_text': ''}), 201
+                'mes': 'ok',
+                'read_text': res_read,
+                'search_text': json.loads(req.read())
+                }), 201
         return jsonify({
             'result': 'error',
             'read_text': ''}), 201   
