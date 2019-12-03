@@ -115,7 +115,6 @@ def upload_image():
             # return req.text
             rs = {}
             rs['read_text'] = res_read
-            rs['result'] = req.read()
         
             return rs
             # data = {'result': req.read(),'read_text': res_read}
