@@ -61,6 +61,7 @@ def upload_image():
             image = request.files["image"]
             execution_path = os.getcwd()
 
+            # model_path = os.path.join(execution_path, app.config["MODEL"], 'model_update.h5')
             model_path = os.path.join(execution_path, app.config["MODEL"], 'model.h5')
             filename = secure_filename(image.filename)
             uploaded_path = os.path.join(execution_path, app.config["IMAGE_STATIC"], 'input', filename)
@@ -70,19 +71,19 @@ def upload_image():
 
             model = load_model(model_path, compile = False)
             img = cv2.imread(uploaded_path)
-
-            mapping = ['0', '1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+            mapping = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
             gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             res_read = ''
 
             ret, thresh = cv2.threshold(gray_img, 127, 255, cv2.THRESH_BINARY_INV)
 
-            contours, hier = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            # contours, hier = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             sorted_ctrs = sorted(contours, key=lambda ctr: cv2.boundingRect(ctr)[0])
 
             for i, crt in enumerate(sorted_ctrs):
                 x, y, w, h = cv2.boundingRect(crt)
-                if 500 > w > 10 and 500 > h > 50:
+                if 500 > w > 10 and 500 > h > 50 :
                     roi = img[y-20:y+h+20, x-20:x+w+20]
                     cv2.imwrite(output_path_img_temp, roi)
                     cropped_img = cv2.imread(output_path_img_temp, 0)
@@ -94,27 +95,38 @@ def upload_image():
                     pred_img = pred_img / 255.0
                     pred_img = pred_img.reshape(1, 784)
                     prediction = mapping[model.predict_classes(pred_img)[0]]
+
+                    # roi = gray_img[y-50:y+h+50, x-50:x+w+50]
+                    # cv2.imwrite(output_path_img_temp, roi)
+                    # cropped_img = cv2.imread(output_path_img_temp, 0)
+                    # blur = cv2.GaussianBlur(cropped_img, (5, 5), 0)
+                    # ret3, th3 = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+                    # th3 = cv2.subtract(255, th3)
+                    # pred_img = th3
+                    # pred_img = cv2.resize(pred_img, (28, 28))
+                    # pred_img = pred_img.reshape(1, 28, 28, 1)
+                    # prediction = mapping[model.predict_classes(pred_img)[0]]
+
                     res_read = res_read + prediction
-                    # cv2.imshow('charachter'+str(i), roi)
-                    # cv2.waitKey(0)
 
 
+            # print(str(res))
             params = "/api/e_search?q=" + res_read
 
             connection = http.client.HTTPSConnection("nhqt-dict.herokuapp.com")
             connection.request("GET", params)
 
             req = connection.getresponse()
-            # connection.close()
-            # return json.loads(req.read())
-            # return("Status: {} and reason: {}".format(req.status, req.reason))
-            # return json.loads(req.read())
+            # # connection.close()
+            # # return json.loads(req.read())
+            # # return("Status: {} and reason: {}".format(req.status, req.reason))
+            # # return json.loads(req.read())
 
-            # query = {'q': res_read}
-            # req = requests.get('https://nhqt-dict.herokuapp.com/api/check')
-            # return req.text
-            rs = {}
-            rs['read_text'] = res_read
+            # # query = {'q': res_read}
+            # # req = requests.get('https://nhqt-dict.herokuapp.com/api/check')
+            # # return req.text
+            # rs = {}
+            # rs['read_text'] = res_read
         
             # return rs
             return jsonify({
